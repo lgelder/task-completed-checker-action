@@ -36,7 +36,10 @@ async function run(): Promise<void> {
     core.debug('creates a list of tasks which removed ignored task: ')
     core.debug(result)
 
-    const isTaskCompleted = result.match(/(- \[[ ]\].+)/g) === null
+    const areTasksCompleted = result.match(/(- \[[ ]\].+)/g) === null
+    
+    core.debug('areTasksCompleted: ')
+    core.debug(areTasksCompleted)
 
     const text = createTaskListText(result)
 
@@ -48,12 +51,12 @@ async function run(): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/camelcase
       head_sha: github.context.payload.pull_request?.head.sha,
       status: 'completed',
-      conclusion: isTaskCompleted ? 'success' : 'failure',
+      conclusion: areTasksCompleted ? 'success' : 'failure',
       // eslint-disable-next-line @typescript-eslint/camelcase
       completed_at: new Date().toISOString(),
       output: {
         title: appName,
-        summary: isTaskCompleted
+        summary: areTasksCompleted
           ? 'All tasks are completed!'
           : 'Some tasks are uncompleted!',
         text
